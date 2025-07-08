@@ -37,6 +37,7 @@ namespace UBC_Course_Web_Scrapping_Script
             foreach (string link in links)
             {
                 parseLinkedPage(link);
+                break;
             }
         }
 
@@ -50,11 +51,20 @@ namespace UBC_Course_Web_Scrapping_Script
 
             foreach (var courseTag in courseTags)
             {
-                string courseCodeInfo = courseTag.Descendants("h3").First().InnerHtml;
+                var h3Tag = courseTag.Descendants("h3").First();
+
+                string courseCodeInfo = h3Tag.InnerHtml;
+                int endOfCourseCode = courseCodeInfo.IndexOf('(');
+
+                string courseCode = courseCodeInfo.Substring(0, endOfCourseCode - 1);
+                string courseCredits = courseCodeInfo.Substring(endOfCourseCode + 1, 1);
+                string courseTitle = h3Tag.Descendants("strong").First().InnerHtml;
                 string courseDescription = courseTag.Descendants("p").First().InnerHtml;
 
-                Console.WriteLine("Course Code Info: " + courseCodeInfo);
-                Console.WriteLine("Course Description: " + courseDescription);
+                Console.Write(courseCode + " ");
+                Console.Write(courseCredits + " ");
+                Console.WriteLine(courseTitle);
+                Console.WriteLine(courseDescription);
             }
         }
     }
