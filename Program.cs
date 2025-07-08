@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
+using System.Xml.Linq;
 using HtmlAgilityPack;
 
 
@@ -34,14 +39,21 @@ namespace UBC_Course_Web_Scrapping_Script
 
         static void parseLinkedPages(IEnumerable<string> links)
         {
+
+            List<Course> courses = new List<Course>();
             foreach (string link in links)
             {
-                parseLinkedPage(link);
+                parseLinkedPage(link, courses);
                 break;
             }
+
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            string fileName = "UBC-Course-Info.json";
+            string json = JsonSerializer.Serialize(courses, options);
+            File.WriteAllText(fileName, json);
         }
 
-        static void parseLinkedPage(string link)
+        static void parseLinkedPage(string link, List<Course> courses)
         {
             var url = link;
             var web = new HtmlWeb();
@@ -61,10 +73,10 @@ namespace UBC_Course_Web_Scrapping_Script
                 string courseTitle = h3Tag.Descendants("strong").First().InnerHtml;
                 string courseDescription = courseTag.Descendants("p").First().InnerHtml;
 
-                Console.Write(courseCode + " ");
-                Console.Write(courseCredits + " ");
-                Console.WriteLine(courseTitle);
-                Console.WriteLine(courseDescription);
+                Int32.TryParse(courseCredits, out int credits);
+
+                Course current = new Course(courseCode, credits, courseTitle, courseDescription);
+                courses.Add(current);
             }
         }
     }
