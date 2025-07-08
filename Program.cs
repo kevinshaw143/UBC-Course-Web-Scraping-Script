@@ -21,7 +21,7 @@ namespace UBC_Course_Web_Scrapping_Script
 
         static void parseLinkedPages(IEnumerable<string> links)
         {
-
+            Console.WriteLine("hi");
         }
 
         static void Main(string[] args)
@@ -37,7 +37,7 @@ namespace UBC_Course_Web_Scrapping_Script
 
             printLinks(links);
 
-            parseLinkedPages(IEnumerable<string> links);
+            parseLinkedPages(links);
         }
     }
 }
