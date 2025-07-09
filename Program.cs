@@ -54,12 +54,11 @@ namespace UBC_Course_Web_Scrapping_Script
             }
 
             // uncomment to write to file
-            /*
+            
             var options = new JsonSerializerOptions { WriteIndented = true };
             string fileName = "UBC-Course-Info.json";
             string json = JsonSerializer.Serialize(courses, options);
             File.WriteAllText(fileName, json);
-            */
         }
 
         static void parseLinkedPage(string link, List<Course> courses)
@@ -87,7 +86,7 @@ namespace UBC_Course_Web_Scrapping_Script
                 Course current = new Course(courseCode, credits, courseTitle, courseDescription);
                 courses.Add(current);
                 current.print();
-                Console.WriteLine("");
+                //Console.WriteLine("");
             }
         }
     }

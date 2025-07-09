@@ -35,7 +35,6 @@ namespace UBC_Course_Web_Scrapping_Script
 
         public Course(string courseCode, int? credits, string title, string description)
         {
-
             assignCourseCode(courseCode);
 
             this.credits = credits != null ? (int)credits : -1;
@@ -54,11 +53,13 @@ namespace UBC_Course_Web_Scrapping_Script
         private void assignCourseCode(string courseCode)
         {
             int spaceIndex = courseCode.IndexOf(' ');
+            int _VIndex = courseCode.IndexOf("_V");
             int codeLength = 3;
 
             try
             {
-                this.major = courseCode.Substring(0, spaceIndex);
+                int endIndex = Math.Min(spaceIndex, _VIndex);
+                this.major = courseCode.Substring(0, endIndex);
                 this.code = courseCode.Substring(spaceIndex + 1, codeLength);
             }
             catch (ArgumentOutOfRangeException)
@@ -150,16 +151,26 @@ namespace UBC_Course_Web_Scrapping_Script
 
 
 
-        private static Func<Match, string> remove_V = (match) =>
+        private static Func<Match, string> formatMatch = (match) =>
         {
             string value = match.Value;
-            int index = value.IndexOf("_V");
-            if (index == -1)
+
+            // first, add a space if there is no space
+            int spaceIndex = value.IndexOf(' ');
+            if (spaceIndex == -1)
             {
-                return match.Value;
+                int courseCodeLength = 3;
+                value = value.Substring(0, value.Length - 3) + " " + value.Substring(value.Length - courseCodeLength);
             }
 
-            return value.Substring(0, index) + value.Substring(index + 2);
+            // second, remove the _V if there is a _V
+            int index = value.IndexOf("_V");
+            if (index != -1)
+            {
+                value = value.Substring(0, index) + value.Substring(index + 2);
+            }
+
+            return value;
         };
 
         private void findCourseRelations()
@@ -167,17 +178,20 @@ namespace UBC_Course_Web_Scrapping_Script
             string pattern = courseCodeRegex;
             prerequisites = Regex.Matches(prerequisiteString, pattern)
                 .Cast<Match>()
-                .Select(match => remove_V(match))
+                .Select(match => formatMatch(match))
+                .Distinct()
                 .ToList();
 
             corequisites = Regex.Matches(corequisiteString, pattern)
                 .Cast<Match>()
-                .Select(match => remove_V(match))
+                .Select(match => formatMatch(match))
+                .Distinct()
                 .ToList();
 
             equivalents = Regex.Matches(equivalentString, pattern)
                .Cast<Match>()
-               .Select(match => remove_V(match))
+               .Select(match => formatMatch(match))
+               .Distinct()
                .ToList();
         }
 
