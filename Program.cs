@@ -47,10 +47,11 @@ namespace UBC_Course_Web_Scrapping_Script
                 // https://vancouver.calendar.ubc.ca/course-descriptions/subject/econv
                 // https://vancouver.calendar.ubc.ca/course-descriptions/subject/mathv
                 // https://vancouver.calendar.ubc.ca/course-descriptions/subject/hebrv
-                if (link.Equals(@"https://vancouver.calendar.ubc.ca/course-descriptions/subject/physv"))
-                {
-                    parseLinkedPage(link, courses);
-                }
+                //if (link.Equals(@"https://vancouver.calendar.ubc.ca/course-descriptions/subject/physv"))
+                //{
+                Console.WriteLine("Evaluating link: " + link);
+                parseLinkedPage(link, courses);
+                //}
             }
 
             // uncomment to write to file
@@ -84,7 +85,7 @@ namespace UBC_Course_Web_Scrapping_Script
 
                 Course current = new Course(courseCode, credits, courseTitle, courseDescription, link);
                 courses.Add(current);
-                current.print();
+                // current.print();
                 //Console.WriteLine("");
             }
         }
