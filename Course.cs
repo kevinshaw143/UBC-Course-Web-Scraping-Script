@@ -11,30 +11,35 @@ namespace UBC_Course_Web_Scrapping_Script
     internal class Course
     {
 
-        private static string courseCodeRegex = "[A-Z]{3,4}(_V)?\\s?[0-9]{3}";
-        private string major { get; set; }
+        // these HAVE to be public for the serializer.
+        public static string courseCodeRegex = "[A-Z]{3,4}(_V)?\\s?[0-9]{3}";
+        public string major { get; set; }
 
-        private string code { get; set; }
+        public string code { get; set; }
 
-        private string courseCode => major + " " + code;
+        public string courseCode => major + " " + code;
 
-        private int credits { get; set; }
+        public int credits { get; set; }
 
-        private string title { get; set; }
+        public string title { get; set; }
 
-        private string description { get; set; }
-        private string lowercaseDescription { get; set; }
+        public string pageLink { get; set; }
 
-        private string prerequisiteString { get; set; }
-        private string corequisiteString { get; set; }
-        private string equivalentString { get; set; }
+        public string description { get; set; }
+        public string lowercaseDescription { get; set; }
 
-        private List<string> prerequisites { get; set; }
-        private List<string> corequisites { get; set; }
-        private List<string> equivalents { get; set; }
+        public string prerequisiteString { get; set; }
+        public string corequisiteString { get; set; }
+        public string equivalentString { get; set; }
 
-        public Course(string courseCode, int? credits, string title, string description)
+        public List<string> prerequisites { get; set; }
+        public List<string> corequisites { get; set; }
+        public List<string> equivalents { get; set; }
+
+        public Course(string courseCode, int? credits, string title, string description, string link)
         {
+            pageLink = link;
+
             assignCourseCode(courseCode);
 
             this.credits = credits != null ? (int)credits : -1;

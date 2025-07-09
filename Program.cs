@@ -47,16 +47,15 @@ namespace UBC_Course_Web_Scrapping_Script
                 // https://vancouver.calendar.ubc.ca/course-descriptions/subject/econv
                 // https://vancouver.calendar.ubc.ca/course-descriptions/subject/mathv
                 // https://vancouver.calendar.ubc.ca/course-descriptions/subject/hebrv
-                if (link.Equals(@"https://vancouver.calendar.ubc.ca/course-descriptions/subject/mathv"))
+                if (link.Equals(@"https://vancouver.calendar.ubc.ca/course-descriptions/subject/physv"))
                 {
                     parseLinkedPage(link, courses);
                 }
             }
 
             // uncomment to write to file
-            
             var options = new JsonSerializerOptions { WriteIndented = true };
-            string fileName = "UBC-Course-Info.json";
+            string fileName = "UBC-Course-Data.json";
             string json = JsonSerializer.Serialize(courses, options);
             File.WriteAllText(fileName, json);
         }
@@ -83,7 +82,7 @@ namespace UBC_Course_Web_Scrapping_Script
 
                 Int32.TryParse(courseCredits, out int credits);
 
-                Course current = new Course(courseCode, credits, courseTitle, courseDescription);
+                Course current = new Course(courseCode, credits, courseTitle, courseDescription, link);
                 courses.Add(current);
                 current.print();
                 //Console.WriteLine("");
