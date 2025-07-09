@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace UBC_Course_Web_Scrapping_Script
@@ -28,11 +29,12 @@ namespace UBC_Course_Web_Scrapping_Script
         private string corequisiteString { get; set; }
         private string equivalentString { get; set; }
 
-        private List<string> prerequisites  { get; set; }
-        private List<string> corequisites  { get; set; }
+        private List<string> prerequisites { get; set; }
+        private List<string> corequisites { get; set; }
         private List<string> equivalents { get; set; }
 
-        public Course(string courseCode, int? credits, string title, string description) {
+        public Course(string courseCode, int? credits, string title, string description)
+        {
 
             assignCourseCode(courseCode);
 
@@ -81,7 +83,8 @@ namespace UBC_Course_Web_Scrapping_Script
                 findPrerequisiteString(prereqStart, coreqStart, equivalentStart);
                 findCorequisiteString(prereqStart, coreqStart, equivalentStart);
                 findEquivalentString(prereqStart, coreqStart, equivalentStart);
-            } catch (ArgumentOutOfRangeException)
+            }
+            catch (ArgumentOutOfRangeException)
             {
                 Console.WriteLine("ERROR: Out of range for string finding " + courseCode);
             }
@@ -145,9 +148,37 @@ namespace UBC_Course_Web_Scrapping_Script
             return result;
         }
 
+
+
+        private static Func<Match, string> remove_V = (match) =>
+        {
+            string value = match.Value;
+            int index = value.IndexOf("_V");
+            if (index == -1)
+            {
+                return match.Value;
+            }
+
+            return value.Substring(0, index) + value.Substring(index + 2);
+        };
+
         private void findCourseRelations()
         {
+            string pattern = courseCodeRegex;
+            prerequisites = Regex.Matches(prerequisiteString, pattern)
+                .Cast<Match>()
+                .Select(match => remove_V(match))
+                .ToList();
 
+            corequisites = Regex.Matches(corequisiteString, pattern)
+                .Cast<Match>()
+                .Select(match => remove_V(match))
+                .ToList();
+
+            equivalents = Regex.Matches(equivalentString, pattern)
+               .Cast<Match>()
+               .Select(match => remove_V(match))
+               .ToList();
         }
 
 
@@ -163,6 +194,20 @@ namespace UBC_Course_Web_Scrapping_Script
             Console.WriteLine("Coreq String: " + corequisiteString);
             Console.WriteLine("Equivalent String: " + equivalentString);
             Console.WriteLine("---------------------------------");
+
+            printList("Prerequisites", prerequisites);
+            printList("Coerequisites", corequisites);
+            printList("Equivalents", equivalents);
+        }
+
+        private void printList(string listName, List<string> list)
+        {
+            Console.WriteLine("Printing " + listName);
+            foreach (string prereq in list)
+            {
+                Console.Write(prereq + " ");
+            }
+            Console.WriteLine("");
         }
     }
 }

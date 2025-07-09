@@ -44,9 +44,10 @@ namespace UBC_Course_Web_Scrapping_Script
             foreach (string link in links)
             {
 
+                // https://vancouver.calendar.ubc.ca/course-descriptions/subject/econv
                 // https://vancouver.calendar.ubc.ca/course-descriptions/subject/mathv
                 // https://vancouver.calendar.ubc.ca/course-descriptions/subject/hebrv
-                if (link.Equals(@"https://vancouver.calendar.ubc.ca/course-descriptions/subject/econv"))
+                if (link.Equals(@"https://vancouver.calendar.ubc.ca/course-descriptions/subject/mathv"))
                 {
                     parseLinkedPage(link, courses);
                 }
