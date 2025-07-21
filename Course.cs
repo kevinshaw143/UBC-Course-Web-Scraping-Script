@@ -36,6 +36,8 @@ namespace UBC_Course_Web_Scrapping_Script
         public List<string> corequisites { get; set; }
         public List<string> equivalents { get; set; }
 
+        // this exists for deserialization
+        public Course() { }
         public Course(string courseCode, int? credits, string title, string description, string link)
         {
             pageLink = link;

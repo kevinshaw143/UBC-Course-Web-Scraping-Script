@@ -17,11 +17,57 @@ namespace UBC_Course_Web_Scrapping_Script
     {
         static void Main(string[] args)
         {
+            char[] forbiddenYears = { '5', '6', '7', '8' };
+            // scrapeWebsite();
+            string fileName = "UBC-Course-Data.json";
+            string jsonString = File.ReadAllText(fileName);
+            List<Course> courses = JsonSerializer.Deserialize<List<Course>>(jsonString);
+
+            Graph graph = new Graph();
+            foreach (Course c in courses)
+            {
+                Node n = new Node();
+                char year = c.code.First();
+                if (forbiddenYears.Contains(year))
+                {
+                    continue;
+                    
+                }
+                n.id = c.courseCode;
+                graph.nodes.Add(n);
+
+                foreach (string prereq in c.prerequisites)
+                {
+                    int codeLength = 3;
+                    char dependencyYear = prereq.Substring(prereq.Length - codeLength).First();
+                    if (forbiddenYears.Contains(year))
+                    {
+                        // do nothing
+                    } else
+                    {
+                        graph.links.Add(new Link(c.courseCode, prereq));
+                    }
+                }
+            }
+
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            string outputFile = "UBC-Course-Data-Undergrad.json";
+            string json = JsonSerializer.Serialize(graph, options);
+            File.WriteAllText(outputFile, json);
+        }
+
+        static void makeNodeAndEdgesJson()
+        {
+            return;
+        }
+
+        static void scrapeWebsite()
+        {
             var url = "https://vancouver.calendar.ubc.ca/course-descriptions/courses-subject";
             var web = new HtmlWeb();
             var doc = web.Load(url);
             IEnumerable<string> hrefs = doc.DocumentNode.SelectNodes("//a")
-                .Where(node => node.Attributes["href"] != null)                         
+                .Where(node => node.Attributes["href"] != null)
                 .Select(node => node.Attributes["href"].Value);
 
             IEnumerable<string> links = hrefs.Where(link => link.Contains("https://vancouver.calendar.ubc.ca/course-descriptions/subject/"));
